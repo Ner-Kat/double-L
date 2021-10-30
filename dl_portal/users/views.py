@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.contrib.auth import authenticate, login
 from django.views.generic import FormView, CreateView, DetailView
 
 from .models import User
@@ -30,7 +31,18 @@ class Login(FormView):
         return context
 
     def post(self, request, *args, **kwargs):
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+
+        if user:
+            login(request, user)
+            messages.add_message(request, messages.INFO, 'Вы успешно вошли!')
+            return redirect('home')
+
         form = LoginForm(request.POST)
+        messages.add_message(request, messages.ERROR, 'Неверное имя пользователя или пароль.')
+        return render(request, self.template_name, self.get_reflected_context(form))
 
 
 class Registration(CreateView):

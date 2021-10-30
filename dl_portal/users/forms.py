@@ -1,8 +1,14 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.core.exceptions import ValidationError
+
 from .models import User
 
 
 class RegistrationForm(forms.ModelForm):
+    password_confirm = forms.CharField(widget=forms.PasswordInput(attrs={"class": "form-control", }),
+                                       label='Подтверждение пароля', )
+
     class Meta:
         model = User
         fields = ['username', 'email', 'password']
@@ -34,6 +40,15 @@ class RegistrationForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+    def clean(self):
+        super(RegistrationForm, self).clean()
+
+        password = self.cleaned_data.get('password')
+        password_confirm = self.cleaned_data.get('password_confirm')
+        if not password == password_confirm:
+            self.add_error('password_confirm', 'Пароли не совпадают')
+            raise ValidationError("Пароли не совпадают")
 
 
 class LoginForm(forms.ModelForm):
