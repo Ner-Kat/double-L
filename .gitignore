@@ -203,3 +203,4 @@ fabric.properties
 
 **/media
 **/static
+!dl_portal/static
