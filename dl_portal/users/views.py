@@ -1,13 +1,18 @@
+from django.utils import timezone
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
-from django.views.generic import FormView, CreateView, DetailView
+from django.contrib.auth import authenticate, login, logout
+from django.views.generic import FormView, CreateView, DetailView, View
 
 from .models import User
 from .forms import RegistrationForm, LoginForm
+from .utils import UserContextMixin
 
 
-class Login(FormView):
+class Login(UserContextMixin, FormView):
+    """
+    Контроллер (view) аутентификации.
+    """
     template_name = 'users/login.html'
     form_class = LoginForm
 
@@ -25,6 +30,7 @@ class Login(FormView):
     def get_context_data(self, **kwargs):
         context = {
             **self.get_context(),
+            **self.get_user_context(),
             **super().get_context_data(**kwargs)
         }
 
@@ -37,6 +43,8 @@ class Login(FormView):
 
         if user:
             login(request, user)
+            user.last_login = timezone.now()
+            user.save()
             messages.add_message(request, messages.INFO, 'Вы успешно вошли!')
             return redirect('home')
 
@@ -45,7 +53,19 @@ class Login(FormView):
         return render(request, self.template_name, self.get_reflected_context(form))
 
 
-class Registration(CreateView):
+class Logout(View):
+    """
+    Контроллер (view) выхода из сессии
+    """
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return redirect('home')
+
+
+class Registration(UserContextMixin, CreateView):
+    """
+    Контроллер (view) регистрации.
+    """
     template_name = 'users/registration.html'
     form_class = RegistrationForm
 
@@ -63,6 +83,7 @@ class Registration(CreateView):
     def get_context_data(self, **kwargs):
         context = {
             **self.get_context(),
+            **self.get_user_context(),
             **super().get_context_data(**kwargs)
         }
         return context
@@ -78,7 +99,23 @@ class Registration(CreateView):
             return render(request, self.template_name, self.get_reflected_context(form))
 
 
-class UserProfile(DetailView):
+class UserProfile(UserContextMixin, DetailView):
+    """
+    Контроллер (view) профиля пользователя.
+    """
     model = User
     template_name = 'users/user_profile.html'
     context_object_name = 'user'
+    slug_url_kwarg = "username"
+    slug_field = "username"
+
+    def get_context_data(self, **kwargs):
+        context = {
+            **self.get_user_context(),
+            **super(UserProfile, self).get_context_data()
+        }
+        context_adding = {
+            'title': context['user'].nickname,
+        }
+
+        return {**context, **context_adding}

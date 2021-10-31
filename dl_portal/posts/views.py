@@ -7,12 +7,14 @@ from django.views.generic import ListView, DetailView, CreateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from users.utils import UserContextMixin
+
 from .models import Post, Category
 from .forms import PostForm
 import posts.settings as settings
 
 
-class PostsList(ListView):
+class PostsList(UserContextMixin, ListView):
     model = Post
     template_name = 'posts/list.html'
     context_object_name = 'posts'
@@ -58,7 +60,8 @@ class PostsList(ListView):
             'is_last_page': is_last_page,
             'is_first_page': is_first_page,
             'list_url': reverse_lazy('category') if category else reverse_lazy('posts_list'),
-            **super().get_context_data(**kwargs)
+            **self.get_user_context(),
+            **super().get_context_data(**kwargs),
         }
 
         if context['posts'] is None:  # or len(context['posts']) == 0:
@@ -82,7 +85,7 @@ class PostsList(ListView):
         return result.order_by('-created_at')[first:last]
 
 
-class FullPost(DetailView):
+class FullPost(UserContextMixin, DetailView):
     model = Post
     pk_url_kwarg = 'post_id'
     template_name = 'posts/post.html'
@@ -91,6 +94,7 @@ class FullPost(DetailView):
     def get_context_data(self, **kwargs):
         context = {
             'prev_url': self.request.META.get('HTTP_REFERER'),
+            **self.get_user_context(),
             **super().get_context_data(**kwargs)
         }
         context_adding = {
@@ -103,13 +107,14 @@ class FullPost(DetailView):
         return Post.objects.select_related('category').get(pk=self.kwargs['post_id'])
 
 
-class AddPost(LoginRequiredMixin, CreateView):
+class AddPost(LoginRequiredMixin, UserContextMixin, CreateView):
     template_name = 'posts/add_post.html'
     form_class = PostForm
 
     def get_context_data(self, **kwargs):
         context = {
             'title': 'Добавление поста',
+            **self.get_user_context(),
             **super().get_context_data(**kwargs)
         }
         return context

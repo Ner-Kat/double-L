@@ -115,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -127,10 +127,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = '/static/'  # Url prefix for static files
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')  # Real dir with all static
+# List of dirs with static that should be collected (app's static not to be specified there)
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'dl_portal/static')
+    os.path.join(BASE_DIR, 'dl_portal/static'),
 ]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -146,3 +147,6 @@ INTERNAL_IPS = [
 ]
 
 AUTH_USER_MODEL = 'users.User'
+AUTHENTICATION_BACKENDS = [
+    'users.backends.UsersAuthBackend'
+]

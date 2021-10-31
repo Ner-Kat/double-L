@@ -2,6 +2,8 @@ from django.db import models
 from django.urls import reverse_lazy
 from django.conf import settings
 
+from .utils import preview_upload_path
+
 
 class Category(models.Model):
     slug = models.SlugField(verbose_name='Slug-имя', max_length=255, unique=True, db_index=True)
@@ -34,8 +36,6 @@ class Post(models.Model):
     updated_at = models.DateTimeField(verbose_name='Дата обновления', auto_now=True)
     category = models.ForeignKey(verbose_name='Категория', to=Category, on_delete=models.PROTECT,
                                  related_name='posts')
-    # universe = models.ForeignKey(verbose_name='Вселенная', to='universes.Universe', on_delete=models.PROTECT,
-    #                              related_name='posts', blank=True, null=True)
     content = models.TextField(verbose_name='Содержание материала')
     short_content = models.TextField(verbose_name='Сокращённый материал', max_length=3072)
     source = models.URLField(verbose_name='Источник', blank=True, null=True)
@@ -43,7 +43,7 @@ class Post(models.Model):
     rating = models.IntegerField(verbose_name='Рейтинг', blank=True, default=0)
     grades = models.ManyToManyField(verbose_name='Оценки', to='users.Grade', blank=True,
                                     related_name='graduated_posts')
-    preview_banner = models.ImageField(verbose_name='Превью', blank=True, null=True)
+    preview_banner = models.ImageField(verbose_name='Превью', upload_to=preview_upload_path, blank=True, null=True)
 
     def __str__(self):
         return self.title

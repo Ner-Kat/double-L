@@ -18,8 +18,13 @@
             </ul>
         </div>
         <div class="nav justify-content-center">
+        {% if subj_id == 0 %}
             <a href="{% url 'login' %}"><button type="button" class="btn btn-secondary">Войти</button></a>
             <a href="{% url 'registration' %}"><button type="button" class="btn btn-dark">Зарегистрироваться</button></a>
+        {% else %}
+            <a href="{% url 'userprofile' subj_username %}"><button type="button" class="btn btn-dark">{{ subj_nickname }}</button></a>
+            <a href="{% url 'logout' %}"><button type="button" class="btn btn-secondary">Выйти</button></a>
+        {% endif %}
         </div>
     </div>
 </nav>
