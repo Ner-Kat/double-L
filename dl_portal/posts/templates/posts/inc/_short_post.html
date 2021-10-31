@@ -1,0 +1,18 @@
+<div class="card mt-3">
+    <div class="card-header">
+        <a href="{{ post.category.get_absolute_url }}" class="btn btn-outline-secondary btn-sm">{{ post.category }}</a>
+    </div>
+    <div class="card-body" style="transform: rotate(0);">
+        <h5 class="card-title">{{ post.title }}</h5>
+        <p class="card-text">{{ post.content|safe|linebreaks|truncatewords:70 }}</p>
+        <a href="{{ post.get_absolute_url }}" class="btn btn-primary btn-sm stretched-link">Подробнее</a>
+    </div>
+    <div class="card-footer text-muted">
+        <div class="row">
+            <div class="col-md-6">{{ post.created_at }}</div>
+            <div class="col-md-6 text-end">
+                <a href="#" class="btn btn-outline-secondary btn-sm">{{ post.author }}</a>
+            </div>
+        </div>
+    </div>
+</div>

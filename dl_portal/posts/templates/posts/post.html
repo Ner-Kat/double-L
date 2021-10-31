@@ -1,0 +1,28 @@
+{% extends 'posts/base_posts.html' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="col-md-12">
+    <div class="card border-dark mt-3">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-1"><a href="{{ prev_url }}" class="btn btn-outline-secondary btn-sm">Назад</a></div>
+                <div class="col-md-11"><a href="{{ post.category.get_absolute_url }}" class="nav-link">{{ post.category }}</a></div>
+            </div>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title text-center">{{ post.title }}</h5>
+            <p class="card-text">{{ post.content }}</p>
+        </div>
+        <div class="card-footer text-muted">
+            <div class="row">
+                <div class="col-md-6">{{ post.created_at }}</div>
+                <div class="col-md-6 text-end">
+                    <a href="#" class="btn btn-outline-secondary btn-sm">{{ post.author }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

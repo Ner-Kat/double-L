@@ -1,0 +1,36 @@
+{% extends 'users/base_users.html' %}
+
+{% block content %}
+  <div class="col-md-12">
+    <div class="card">
+      {{ subj_id }}
+      {{ subj_username }}
+      {{ subj_email }}
+      {{ subj_nickname }}
+      {{ subj_is_active }}
+      {{ subj_is_admin }}
+      {{ subj_is_superadmin }}
+      {{ subj_date_joined }}
+      {{ subj_last_login }}
+      {{ subj_avatar }}
+      {{ subj_groups }}
+      {{ subj_lore_groups }}
+    </div>
+    <div class="card">
+      {{ user.id }}
+      {{ user.username }}
+      {{ user.email }}
+      {{ user.nickname }}
+      {{ user.is_active }}
+      {{ user.is_admin }}
+      {{ user.is_superadmin }}
+      {{ user.date_joined }}
+      {{ user.last_login }}
+      {{ user.avatar }}
+      {{ user.groups }}
+      {{ user.lore_groups }}
+      {{ user.banner }}
+      {{ user.info }}
+    </div>
+  </div>
+{% endblock %}
