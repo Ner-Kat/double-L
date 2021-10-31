@@ -31,7 +31,7 @@ class Post(models.Model):
     slug = models.SlugField(verbose_name='Slug-имя', max_length=255, unique=True, db_index=True)
     title = models.TextField(verbose_name='Заголовок материала', max_length=256, db_index=True)
     author = models.ForeignKey(verbose_name='Автор', to=settings.AUTH_USER_MODEL, on_delete=models.PROTECT,
-                               related_name='posts')
+                               related_name='posts', blank=True)
     created_at = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name='Дата обновления', auto_now=True)
     category = models.ForeignKey(verbose_name='Категория', to=Category, on_delete=models.PROTECT,

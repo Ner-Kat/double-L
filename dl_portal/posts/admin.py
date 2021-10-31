@@ -10,7 +10,7 @@ class PostAdmin(admin.ModelAdmin):
     list_editable = ('category', 'author', )
     list_filter = ('category', 'author', )
 
-    fields = ('pk', 'slug', 'title', 'category', 'universe', 'author', 'content', 'created_at', 'source', 'views',
+    fields = ('pk', 'slug', 'title', 'category', 'author', 'content', 'created_at', 'source', 'views',
               'rating', 'preview_banner')
     readonly_fields = ('pk', 'created_at', 'views', 'rating', )
 

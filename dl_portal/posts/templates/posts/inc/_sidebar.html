@@ -1,7 +1,7 @@
 {% load posts_tags %}
 {% get_categories as categories %}
 <div class="list-group mt-3">
-    <a href="{% url 'home' %}" class="list-group-item list-group-item-action {% if not user_category %}active{% endif %}" aria-current="true">
+    <a href="{% url 'posts_list' %}" class="list-group-item list-group-item-action {% if not user_category %}active{% endif %}" aria-current="true">
         Все посты
     </a>
     {% show_categories user_category %}

@@ -6,7 +6,7 @@ from .utils import LabelSuffixMixin
 from .models import Post
 
 
-class PostForm(LabelSuffixMixin, forms.ModelForm):
+class PostAddForm(LabelSuffixMixin, forms.ModelForm):
     def clean_title(self):
         title = self.cleaned_data['title']
         if re.match(r'[^\d\w\sА-Яа-я-–—.,()/…?:$%&#@*!№+=_]', title):
@@ -15,8 +15,7 @@ class PostForm(LabelSuffixMixin, forms.ModelForm):
 
     class Meta:
         model = Post
-        # fields = '__all__'  # Не рекомендуется, получает все поля формы
-        fields = ['title', 'content', 'author', 'category']
+        fields = ['title', 'content', 'category', 'short_content', 'preview_banner']
 
         widgets = {
             'title': forms.TextInput(attrs={
@@ -27,18 +26,22 @@ class PostForm(LabelSuffixMixin, forms.ModelForm):
                 "class": "form-control",
                 "rows": "15",
             }),
-            'author': forms.TextInput(attrs={
-                "class": "form-control",
-                "placeholder": "Автор",
-            }),
             'category': forms.Select(attrs={
                 "class": "form-select",
+            }),
+            'short_content': forms.Textarea(attrs={
+                "class": "form-control",
+                "rows": "10",
+            }),
+            'preview_banner': forms.FileInput(attrs={
+                "class": "form-control",
             }),
         }
 
         labels = {
             'title': "Заголовок",
             'content': "Текст",
-            'author': "Автор",
             'category': "Категория",
+            'short_content': 'Сокращённый текст',
+            'preview_banner': 'Превью-баннер',
         }
