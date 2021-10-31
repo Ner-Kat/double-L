@@ -66,7 +66,7 @@ class PostsList(UserContextMixin, ListView):
             **super().get_context_data(**kwargs),
         }
 
-        if context['posts'] is None:  # or len(context['posts']) == 0:
+        if context['posts'] is None:
             raise Http404()
 
         return context

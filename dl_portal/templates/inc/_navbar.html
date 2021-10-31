@@ -27,7 +27,12 @@
             <a href="{% url 'login' %}"><button type="button" class="btn btn-secondary">Войти</button></a>
             <a href="{% url 'registration' %}"><button type="button" class="btn btn-dark">Зарегистрироваться</button></a>
         {% else %}
-            <a href="{% url 'userprofile' subj_username %}"><button type="button" class="btn btn-dark">{{ subj_nickname }}</button></a>
+            <a href="{% url 'userprofile' subj_username %}">
+                <button type="button" class="btn btn-dark">
+                    {% if subj_avatar %}<img src="/media/{{ subj_avatar }}" style="height: 25px; padding-bottom: 4px;">&nbsp;{% endif %}
+                    {{ subj_nickname }}
+                </button>
+            </a>
             <a href="{% url 'logout' %}"><button type="button" class="btn btn-secondary">Выйти</button></a>
         {% endif %}
         </div>
