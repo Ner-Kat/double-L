@@ -1,3 +1,0 @@
-{% for cat in categories %}
-    <a href="{{ cat.get_absolute_url }}" class="list-group-item list-group-item-action {% if user_category == cat %}active{% endif %}">{{ cat.title }}</a>
-{% endfor %}
