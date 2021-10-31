@@ -28,7 +28,7 @@ class Category(models.Model):
 
 
 class Post(models.Model):
-    slug = models.SlugField(verbose_name='Slug-имя', max_length=255, unique=True, db_index=True)
+    slug = models.SlugField(verbose_name='Slug-имя', max_length=255, unique=True, db_index=True, default=None)
     title = models.TextField(verbose_name='Заголовок материала', max_length=256, db_index=True)
     author = models.ForeignKey(verbose_name='Автор', to=settings.AUTH_USER_MODEL, on_delete=models.PROTECT,
                                related_name='posts', blank=True)
@@ -50,9 +50,6 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse_lazy('post', kwargs={"post_slug": self.slug})
-
-    # def get_categories(self):
-    #     return "\n".join(cat.name for cat in self.category.all())
 
     def add_grade(self, user, value):
         existing_grade = self.grades.filter(user__exact=user)

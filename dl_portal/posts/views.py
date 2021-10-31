@@ -7,6 +7,7 @@ from django.views.generic import ListView, DetailView, CreateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from django.template.defaultfilters import slugify
 
 from users.utils import UserContextMixin
 
@@ -140,6 +141,8 @@ class AddPost(LoginRequiredMixin, UserContextMixin, CreateView):
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
+            if not post.slug:
+                post.slug = slugify(post.title)
             post.save()
 
             messages.add_message(request, messages.INFO, 'Материал добавлен!')
