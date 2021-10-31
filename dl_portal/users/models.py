@@ -141,10 +141,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_superadmin = models.BooleanField(verbose_name='Ключевой администратор', default=False)
     date_joined = models.DateTimeField(verbose_name='Дата регистрации', auto_now_add=True)
     last_login = models.DateTimeField(verbose_name='Дата последнего входа', blank=True, null=True)
-    groups = models.ManyToManyField(verbose_name='Группы прав', to=Group,
+    groups = models.ManyToManyField(verbose_name='Группы прав', to=Group, blank=True,
                                     related_name='users')
     avatar = models.ImageField(verbose_name='Аватар', upload_to=avatars_upload_path, blank=True, null=True)
-    lore_groups = models.ManyToManyField(verbose_name='Лороведение', to=LoreGroup,
+    lore_groups = models.ManyToManyField(verbose_name='Лороведение', to=LoreGroup, blank=True,
                                          related_name='users')
     banner = models.ImageField(verbose_name='Баннер профиля', upload_to=banners_upload_path, blank=True, null=True)
     info = models.TextField(verbose_name='Сведения о пользователе', blank=True, null=True)

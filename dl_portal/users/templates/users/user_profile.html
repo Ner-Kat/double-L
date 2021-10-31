@@ -1,36 +1,49 @@
 {% extends 'users/base_users.html' %}
 
 {% block content %}
-  <div class="col-md-12">
-    <div class="card">
-      {{ subj_id }}
-      {{ subj_username }}
-      {{ subj_email }}
-      {{ subj_nickname }}
-      {{ subj_is_active }}
-      {{ subj_is_admin }}
-      {{ subj_is_superadmin }}
-      {{ subj_date_joined }}
-      {{ subj_last_login }}
-      {{ subj_avatar }}
-      {{ subj_groups }}
-      {{ subj_lore_groups }}
+
+<div class="col-md-4">
+  <div class="card">
+    <img src="/media/{{ user.avatar }}" class="card-img-top img-fluid" alt="{{ user.nickname }}">
+    <div class="card-body">
+      <h5 class="card-title">{{ user.nickname }}</h5>
+      <!--<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>-->
     </div>
-    <div class="card">
-      {{ user.id }}
-      {{ user.username }}
-      {{ user.email }}
-      {{ user.nickname }}
-      {{ user.is_active }}
-      {{ user.is_admin }}
-      {{ user.is_superadmin }}
-      {{ user.date_joined }}
-      {{ user.last_login }}
-      {{ user.avatar }}
-      {{ user.groups }}
-      {{ user.lore_groups }}
-      {{ user.banner }}
-      {{ user.info }}
+    <ul class="list-group list-group-flush">
+      {% if user.is_superadmin %}<li class="list-group-item">Ключевой администратор</li>{% endif %}
+      {% for group in user.get_groups_list %}
+      <li class="list-group-item">{{ group.name }}</li>
+      {% empty %}
+      <li class="list-group-item">Пользователь не состоит в группах</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<div class="col-md-8">
+  <div class="card">
+    <img src="/media/{{ user.banner }}" class="card-img-top img-fluid" alt="{{ user.nickname }}">
+    <div class="card-body">
+
+      <h5 class="card-title">Информация о пользователе</h5>
+      <p class="card-text">Дата регистрации: {{ user.date_joined }}</p>
+      <p class="card-text">{% if user.is_admin %}Админ{% endif %}</p>
+
+      <h5 class="card-title">Лороведение</h5>
+      {% for group in user.get_lore_groups_list %}
+      <p class="card-text">group.name</p>
+      {% empty %}
+      <p class="card-text">Пользователь не является лороведом</p>
+      {% endfor %}
+
+      {% if user.info %}
+      <h5 class="card-title">О себе</h5>
+      <p class="card-text">{{ user.info }}</p>
+      {% endif %}
+
+      <p class="card-text"><small class="text-muted">Дата последнего входа: {{ user.last_login }}</small></p>
     </div>
   </div>
+</div>
+
 {% endblock %}

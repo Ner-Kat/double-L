@@ -10,9 +10,14 @@
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Главная</a>
                 </li>
-                {% if request.user.is_authenticated %}
+                {% if subj_id != 0 %}
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{% url 'add_post' %}">Написать пост</a>
+                </li>
+                {% endif %}
+                {% if subj_is_admin %}
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'admin:index' %}">Админ-панель</a>
                 </li>
                 {% endif %}
             </ul>
