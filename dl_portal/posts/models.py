@@ -37,7 +37,7 @@ class Post(models.Model):
     category = models.ForeignKey(verbose_name='Категория', to=Category, on_delete=models.PROTECT,
                                  related_name='posts')
     content = models.TextField(verbose_name='Содержание материала')
-    short_content = models.TextField(verbose_name='Сокращённый материал', max_length=3072)
+    short_content = models.TextField(verbose_name='Сокращённый материал', max_length=3072, blank=True)
     source = models.URLField(verbose_name='Источник', blank=True, null=True)
     views = models.IntegerField(verbose_name='Просмотры', blank=True, default=0)
     rating = models.IntegerField(verbose_name='Рейтинг', blank=True, default=0)

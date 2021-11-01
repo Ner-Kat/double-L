@@ -11,10 +11,11 @@ class Home(UserContextMixin, TemplateView):
     template_name = 'pages/home.html'
 
     def get_context_data(self, **kwargs):
-        posts = Post.objects.prefetch_related('category')[:10]
+        posts = Post.objects.select_related('category', 'author')[:10]
 
         context = {
             'title': 'Главная',
+            'login_next': self.request.path_info,
             'posts': posts,
             **self.get_user_context(),
             **super().get_context_data()

@@ -1,4 +1,5 @@
 from math import ceil
+import bleach
 
 from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
@@ -8,12 +9,15 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.template.defaultfilters import slugify
+from django.utils.html import strip_tags
+from django.template.defaultfilters import truncatechars_html
 
 from users.utils import UserContextMixin
 
 from .models import Post, Category
 from .forms import PostAddForm
 import posts.settings as settings
+import dl_portal.settings as global_settings
 
 
 class PostsList(UserContextMixin, ListView):
@@ -57,6 +61,7 @@ class PostsList(UserContextMixin, ListView):
         context = {
             'title': title,
             'user_category': self.get_category(),
+            'login_next': self.request.path_info,
             'pages_num': pages_num,
             'page': page,
             'is_last_page': is_last_page,
@@ -72,7 +77,7 @@ class PostsList(UserContextMixin, ListView):
         return context
 
     def get_queryset(self):
-        result = Post.objects.select_related('category')
+        result = Post.objects.select_related('category', 'author')
         page_id = self.get_page()
 
         category = self.get_category()
@@ -89,13 +94,14 @@ class PostsList(UserContextMixin, ListView):
 
 class FullPost(UserContextMixin, DetailView):
     model = Post
-    pk_url_kwarg = 'post_id'
+    pk_url_kwarg = 'post_slug'
     template_name = 'posts/post.html'
     context_object_name = 'post'
 
     def get_context_data(self, **kwargs):
         context = {
             'prev_url': self.request.META.get('HTTP_REFERER'),
+            'login_next': self.request.path_info,
             **self.get_user_context(),
             **super().get_context_data(**kwargs)
         }
@@ -107,9 +113,9 @@ class FullPost(UserContextMixin, DetailView):
 
     def get_object(self, queryset=None):
         if 'post_id' in self.kwargs:
-            return Post.objects.select_related('category').get(pk=self.kwargs['post_id'])
+            return Post.objects.select_related('category', 'author').get(pk=self.kwargs['post_id'])
         if 'post_slug' in self.kwargs:
-            return Post.objects.select_related('category').get(slug=self.kwargs['post_slug'])
+            return Post.objects.select_related('category', 'author').get(slug=self.kwargs['post_slug'])
         return None
 
 
@@ -120,6 +126,7 @@ class AddPost(LoginRequiredMixin, UserContextMixin, CreateView):
     def get_context(self):
         return {
             'title': 'Добавление поста',
+            'login_next': self.request.path_info,
         }
 
     def get_reflected_context(self, form):
@@ -141,12 +148,14 @@ class AddPost(LoginRequiredMixin, UserContextMixin, CreateView):
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
+            filtered_content = bleach.clean(post.content, tags=global_settings.ALLOWED_TAGS, strip=True)
+            post.short_content = truncatechars_html(filtered_content, 200)
             if not post.slug:
                 post.slug = slugify(post.title)
             post.save()
 
             messages.add_message(request, messages.INFO, 'Материал добавлен!')
-            return redirect('home')
+            return redirect(post.get_absolute_url())
         else:
             messages.add_message(request, messages.ERROR, 'Материал не был добавлен.')
             return render(request, self.template_name, self.get_reflected_context(form))

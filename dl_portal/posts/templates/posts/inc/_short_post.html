@@ -4,7 +4,7 @@
     </div>
     <div class="card-body" style="transform: rotate(0);">
         <h5 class="card-title">{{ post.title }}</h5>
-        <p class="card-text">{{ post.content|safe|linebreaks|truncatewords:70 }}</p>
+        <p class="card-text">{{ post.short_content|safe }}</p>
         <a href="{{ post.get_absolute_url }}" class="btn btn-primary btn-sm stretched-link">Подробнее</a>
     </div>
     <div class="card-footer text-muted">

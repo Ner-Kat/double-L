@@ -18,7 +18,8 @@ class Login(UserContextMixin, FormView):
 
     def get_context(self):
         return {
-            'title': 'Авторизация'
+            'title': 'Авторизация',
+            'login_next': self.request.path_info,
         }
 
     def get_reflected_context(self, form):
@@ -46,6 +47,8 @@ class Login(UserContextMixin, FormView):
             user.last_login = timezone.now()
             user.save()
             messages.add_message(request, messages.INFO, 'Вы успешно вошли!')
+            if 'next' in request.GET:
+                return redirect(request.GET['next'])
             return redirect('home')
 
         form = LoginForm(request.POST)
@@ -59,7 +62,7 @@ class Logout(View):
     """
     def get(self, request, *args, **kwargs):
         logout(request)
-        return redirect('home')
+        return redirect(self.request.META.get('HTTP_REFERER'))
 
 
 class Registration(UserContextMixin, CreateView):
@@ -72,6 +75,7 @@ class Registration(UserContextMixin, CreateView):
     def get_context(self):
         return {
             'title': 'Регистрация',
+            'login_next': self.request.path_info,
         }
 
     def get_reflected_context(self, form):
@@ -91,9 +95,9 @@ class Registration(UserContextMixin, CreateView):
     def post(self, request, *args, **kwargs):
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
             messages.add_message(request, messages.INFO, 'Вы успешно зарегистрировались!')
-            return redirect('login')
+            return redirect(user.get_absolute_url())
         else:
             messages.add_message(request, messages.ERROR, 'Регистрация не была произведена.')
             return render(request, self.template_name, self.get_reflected_context(form))
@@ -116,6 +120,7 @@ class UserProfile(UserContextMixin, DetailView):
         }
         context_adding = {
             'title': context['user'].nickname,
+            'login_next': self.request.path_info,
         }
 
         return {**context, **context_adding}

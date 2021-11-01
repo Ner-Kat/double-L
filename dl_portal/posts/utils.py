@@ -22,3 +22,13 @@ def preview_upload_path(instance, filename):
     new_name = sha256(new_name.encode('utf-8')).hexdigest()
 
     return "posts/previews/" + path + new_name + os.path.splitext(filename)[1]
+
+
+# def strip_unshort_tags(value):
+#     value = str(value)
+#     while '<' in value and '>' in value:
+#         new_value = _strip_once(value)
+#         if value.count('<') == new_value.count('<'):
+#             break
+#         value = new_value
+#     return value

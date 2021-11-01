@@ -24,7 +24,7 @@
         </div>
         <div class="nav justify-content-center">
         {% if subj_id == 0 %}
-            <a href="{% url 'login' %}"><button type="button" class="btn btn-secondary">Войти</button></a>
+            <a href="{% url 'login' %}?next={{ login_next }}"><button type="button" class="btn btn-secondary">Войти</button></a>
             <a href="{% url 'registration' %}"><button type="button" class="btn btn-dark">Зарегистрироваться</button></a>
         {% else %}
             <a href="{% url 'userprofile' subj_username %}">

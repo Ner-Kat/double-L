@@ -1,6 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 import re
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
 from .utils import LabelSuffixMixin
 from .models import Post
@@ -15,24 +16,21 @@ class PostAddForm(LabelSuffixMixin, forms.ModelForm):
 
     class Meta:
         model = Post
-        fields = ['title', 'content', 'category', 'short_content', 'preview_banner']
+        fields = ['title', 'content', 'category', 'preview_banner']
 
         widgets = {
             'title': forms.TextInput(attrs={
                 "class": "form-control",
                 "placeholder": "Заголовок поста",
             }),
-            'content': forms.Textarea(attrs={
-                "class": "form-control",
-                "rows": "15",
-            }),
+            'content': CKEditorUploadingWidget(),
             'category': forms.Select(attrs={
                 "class": "form-select",
             }),
-            'short_content': forms.Textarea(attrs={
-                "class": "form-control",
-                "rows": "10",
-            }),
+            # 'short_content': forms.Textarea(attrs={
+            #     "class": "form-control",
+            #     "rows": "10",
+            # }),
             'preview_banner': forms.FileInput(attrs={
                 "class": "form-control",
             }),
@@ -42,6 +40,6 @@ class PostAddForm(LabelSuffixMixin, forms.ModelForm):
             'title': "Заголовок",
             'content': "Текст",
             'category': "Категория",
-            'short_content': 'Сокращённый текст',
+            # 'short_content': 'Сокращённый текст',
             'preview_banner': 'Превью-баннер',
         }
